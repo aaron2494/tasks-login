@@ -10,7 +10,7 @@ export default [
         loadComponent:() => import("./features/task-form/task-form.component")
      },
      {
-        path:"edit/:id",
+        path:"edit/:idTask",
         loadComponent:() => import("./features/task-form/task-form.component")
      },
 ] as Routes

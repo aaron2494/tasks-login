@@ -45,8 +45,9 @@ try {
   const {email,password}=this.form.value;
   if(!email || !password)return;
   this._authService.signIn({email,password});
-  toast.success("hola nuevamente");
   this._router.navigateByUrl("/task")
+  toast.success("hola nuevamente");
+ 
 } catch (error) {
   toast.error("ocurrio un error");
 }
