@@ -16,7 +16,6 @@ export const privateGuard = (): CanActivateFn => {
     return () => {
         const router = inject(Router);
         const authState = inject(AuthStateService);
-
         return authState.authState$.pipe(
             map(state => checkAuth(router, state))
         );
