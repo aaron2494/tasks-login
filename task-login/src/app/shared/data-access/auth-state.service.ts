@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import {  Auth, authState, signOut} from "@angular/fire/auth";
+import {  Auth, authState, signOut, User} from "@angular/fire/auth";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -7,6 +7,7 @@ import { Observable } from "rxjs";
 })
 export class AuthStateService { 
     private _auth=inject(Auth);
+  
 
     get authState$():Observable <any>{
         return authState(this._auth)
@@ -14,4 +15,7 @@ export class AuthStateService {
     logOut(){
         return signOut(this._auth)
     }
+    get currentUser(): User | null {
+        return this._auth.currentUser;
+      }
 }

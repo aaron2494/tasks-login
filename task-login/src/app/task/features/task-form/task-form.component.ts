@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, Input, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Task, TaskCreate, TaskService } from '../../data-acces/task.service';
 import { toast } from 'ngx-sonner';
@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './task-form.component.html',
-  styles: ``
+  styles: ``,
+  providers: [TaskService]
 })
 export default class TaskFormComponent {
   
@@ -19,7 +20,7 @@ export default class TaskFormComponent {
 
   loading= signal(false)
 
-  idTask = input.required<string>();
+  @Input() idTask!: string; 
 
   form = this._formBuilder.group({
     title: ["", Validators.required],
@@ -28,7 +29,7 @@ export default class TaskFormComponent {
 
   constructor(){
     effect(()=>{
-      const id = this.idTask();
+      const id = this.idTask;
       if(id){
         this.getTask(id);
       }
@@ -51,7 +52,7 @@ try {
     title: title||"",
     completed: !!completed,   
   };
-  const id = this.idTask();
+  const id = this.idTask;
   if(id){
     await this._taskService.update(task,id)
   }else{
@@ -59,7 +60,7 @@ try {
   }
  
 
-  toast.success("tarea creada")
+  toast.success(`tarea ${id ? "actualizada" : "creada"} correctamente.`)
   this._router.navigateByUrl("/task")
 } catch (error) {
   toast.error("ocurrio un problema")
@@ -67,4 +68,20 @@ try {
   this.loading.set(true)
 }
   }
+    // Método para eliminar una tarea
+    async deleteTask() {
+      const id = this.idTask;
+      if (!id) return; // Si no hay ID, no se puede eliminar.
+  
+      try {
+        this.loading.set(true);
+        await this._taskService.deleteTask({ id, title: '', completed: false });  // Pasamos un objeto Task con el id
+        toast.success('Tarea eliminada correctamente.');
+        this._router.navigateByUrl("/task");
+      } catch (error) {
+        toast.error('Ocurrió un problema al eliminar la tarea.');
+      } finally {
+        this.loading.set(false);
+      }
+    }
 }

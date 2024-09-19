@@ -8,8 +8,11 @@ import { TaskService } from '../../data-acces/task.service';
   standalone: true,
   imports: [TableComponent,RouterLink],
   templateUrl: './task-list.component.html',
-  styles: ``
+  styles: ``,
+  providers: [TaskService]
 })
 export default class TaskListComponent {
+  constructor(public taskService: TaskService) {}
 tasksService = inject (TaskService)
+
 }
