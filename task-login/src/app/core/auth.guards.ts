@@ -1,38 +1,41 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
-import { AuthService } from "../auth/data-access/auth.service";
+
 import { AuthStateService } from "../shared/data-access/auth-state.service";
 import { map } from "rxjs";
 
-export const privateGuard=(): CanActivateFn =>{
-    return ()=>{
-       const router=inject (Router)
-       const authState =inject(AuthStateService)
+const checkAuth = (router: Router, state: any) => {
+    if (!state) {
+        router.navigateByUrl("/auth/sign-in");
+        return false;
+    }
+    return true;
+};
 
-    return authState.authState$.pipe(
-        map(state=>{ 
-            if(!state){
-                router.navigateByUrl("/auth/sign-in");
-                return false;
-            }
-            return true;
-        })
-    )
+export const privateGuard = (): CanActivateFn => {
+    return () => {
+        const router = inject(Router);
+        const authState = inject(AuthStateService);
+
+        return authState.authState$.pipe(
+            map(state => checkAuth(router, state))
+        );
     };
 };
-export const publicGuard=(): CanActivateFn =>{
-        return ()=>{
-           const router=inject (Router)
-           const authState =inject(AuthStateService)
-    
+
+export const publicGuard = (): CanActivateFn => {
+    return () => {
+        const router = inject(Router);
+        const authState = inject(AuthStateService);
+
         return authState.authState$.pipe(
-            map((state)=>{ 
-                if(state){
+            map(state => {
+                if (state) {
                     router.navigateByUrl("/task");
                     return false;
                 }
                 return true;
             })
-        )
+        );
     };
 };
